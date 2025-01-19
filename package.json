@@ -52,7 +52,7 @@
     "drizzle-orm": ">=0.36.0"
   },
   "devDependencies": {
-    "@rocicorp/zero": "^0.11.2025011402",
+    "@rocicorp/zero": "^0.11.2025011802",
     "@types/node": "^22.10.7",
     "@vitest/coverage-v8": "3.0.2",
     "@vitest/ui": "^3.0.2",
