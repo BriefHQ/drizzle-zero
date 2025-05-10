@@ -1,0 +1,593 @@
+{
+  "id": "81e34413-4954-4b23-a110-628dfe74737f",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.all_types": {
+      "name": "all_types",
+      "schema": "",
+      "columns": {
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "smallint": {
+          "name": "smallint",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "integer": {
+          "name": "integer",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bigint": {
+          "name": "bigint",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bigint_number": {
+          "name": "bigint_number",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "smallserial": {
+          "name": "smallserial",
+          "type": "smallserial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "serial": {
+          "name": "serial",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bigserial": {
+          "name": "bigserial",
+          "type": "bigserial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "numeric": {
+          "name": "numeric",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "decimal": {
+          "name": "decimal",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "real": {
+          "name": "real",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "double_precision": {
+          "name": "double_precision",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "text": {
+          "name": "text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "char": {
+          "name": "char",
+          "type": "char",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "varchar": {
+          "name": "varchar",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "boolean": {
+          "name": "boolean",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timestamp_tz": {
+          "name": "timestamp_tz",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timestamp_mode_string": {
+          "name": "timestamp_mode_string",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timestamp_mode_date": {
+          "name": "timestamp_mode_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "json": {
+          "name": "json",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jsonb": {
+          "name": "jsonb",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "typed_json": {
+          "name": "typed_json",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "status_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "optional_smallint": {
+          "name": "optional_smallint",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_integer": {
+          "name": "optional_integer",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_bigint": {
+          "name": "optional_bigint",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_numeric": {
+          "name": "optional_numeric",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_real": {
+          "name": "optional_real",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_double_precision": {
+          "name": "optional_double_precision",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_text": {
+          "name": "optional_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_boolean": {
+          "name": "optional_boolean",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_timestamp": {
+          "name": "optional_timestamp",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_json": {
+          "name": "optional_json",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_enum": {
+          "name": "optional_enum",
+          "type": "status_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_varchar": {
+          "name": "optional_varchar",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_uuid": {
+          "name": "optional_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.filters": {
+      "name": "filters",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.friendship": {
+      "name": "friendship",
+      "schema": "",
+      "columns": {
+        "requesting_id": {
+          "name": "requesting_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "accepting_id": {
+          "name": "accepting_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "accepted": {
+          "name": "accepted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "friendship_requesting_id_user_id_fk": {
+          "name": "friendship_requesting_id_user_id_fk",
+          "tableFrom": "friendship",
+          "tableTo": "user",
+          "columnsFrom": [
+            "requesting_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "friendship_accepting_id_user_id_fk": {
+          "name": "friendship_accepting_id_user_id_fk",
+          "tableFrom": "friendship",
+          "tableTo": "user",
+          "columnsFrom": [
+            "accepting_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "friendship_requesting_id_accepting_id_pk": {
+          "name": "friendship_requesting_id_accepting_id_pk",
+          "columns": [
+            "requesting_id",
+            "accepting_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.medium": {
+      "name": "medium",
+      "schema": "",
+      "columns": {
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.message": {
+      "name": "message",
+      "schema": "",
+      "columns": {
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "senderId": {
+          "name": "senderId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mediumId": {
+          "name": "mediumId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "body": {
+          "name": "body",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "message_senderId_user_id_fk": {
+          "name": "message_senderId_user_id_fk",
+          "tableFrom": "message",
+          "tableTo": "user",
+          "columnsFrom": [
+            "senderId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "message_mediumId_medium_id_fk": {
+          "name": "message_mediumId_medium_id_fk",
+          "tableFrom": "message",
+          "tableTo": "medium",
+          "columnsFrom": [
+            "mediumId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "partner": {
+          "name": "partner",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "custom_type_json": {
+          "name": "custom_type_json",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "custom_interface_json": {
+          "name": "custom_interface_json",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "test_interface": {
+          "name": "test_interface",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "test_type": {
+          "name": "test_type",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "test_exported_type": {
+          "name": "test_exported_type",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.status_type": {
+      "name": "status_type",
+      "schema": "public",
+      "values": [
+        "active",
+        "inactive",
+        "pending"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

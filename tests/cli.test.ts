@@ -3,10 +3,10 @@ import { Project } from "ts-morph";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import {
-  getGeneratedSchema,
   getZeroSchemaDefsFromConfig,
-} from "../src/cli/cli";
+} from "../src/cli/config";
 import * as oneToOneSchema from "./schemas/one-to-one.zero";
+import { getGeneratedSchema } from "../src/cli/shared";
 
 describe("getGeneratedSchema", () => {
   let tsProject: Project;

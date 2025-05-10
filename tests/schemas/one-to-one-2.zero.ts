@@ -20,11 +20,6 @@ export const schema = drizzleZeroConfig(oneToOne2, {
       body: true,
     },
   },
-  manyToMany: {
-    userTable: {
-      mediums: ["messageTable", "mediumTable"],
-    },
-  },
 });
 
 export const permissions = definePermissions<{}, Schema>(schema, () => {

@@ -16,6 +16,7 @@ import {
 } from "./tables";
 import type {
   ColumnIndexKeys,
+  DefaultTableColumnsConfig,
   FindRelationsForTable,
   FindTableByKey,
   FindTableByName,
@@ -48,46 +49,48 @@ type ExtractTableConfigName<TTableConfig> = TTableConfig extends {
 type ManyToManyRelationship<
   TDrizzleSchema extends { [K in string]: unknown },
   TColumnConfig extends TableColumnsConfig<TDrizzleSchema>,
-  TManyConfig extends ManyConfig<TDrizzleSchema, TColumnConfig>,
+  TManyConfig extends ManyConfig<TDrizzleSchema, TColumnConfig> | undefined,
   TTableName extends keyof TColumnConfig & keyof TManyConfig,
-> = TTableName extends keyof TColumnConfig & keyof TManyConfig
-  ? TManyConfig[TTableName] extends ManyTableConfig<
-      TDrizzleSchema,
-      TColumnConfig,
-      TTableName
-    >
-    ? {
-        [K in keyof TManyConfig[TTableName]]: [
-          {
-            readonly sourceField: string[];
-            readonly destField: ColumnIndexKeys<
-              FindTableByKey<
-                TDrizzleSchema,
-                ExtractTableConfigName<TManyConfig[TTableName][K][0]>
-              >
-            >[];
-            readonly destSchema: ExtractTableConfigName<
-              TManyConfig[TTableName][K][0]
-            >;
-            readonly cardinality: "many";
-          },
-          {
-            readonly sourceField: string[];
-            readonly destField: ColumnIndexKeys<
-              FindTableByKey<
-                TDrizzleSchema,
-                ExtractTableConfigName<TManyConfig[TTableName][K][1]>
-              >
-            >[];
-            readonly destSchema: ExtractTableConfigName<
-              TManyConfig[TTableName][K][1]
-            >;
-            readonly cardinality: "many";
-          },
-        ];
-      }
-    : {}
-  : {};
+> = TManyConfig extends undefined
+  ? {}
+  : TTableName extends keyof TColumnConfig & keyof TManyConfig
+    ? TManyConfig[TTableName] extends ManyTableConfig<
+        TDrizzleSchema,
+        TColumnConfig,
+        TTableName
+      >
+      ? {
+          [K in keyof TManyConfig[TTableName]]: [
+            {
+              readonly sourceField: string[];
+              readonly destField: ColumnIndexKeys<
+                FindTableByKey<
+                  TDrizzleSchema,
+                  ExtractTableConfigName<TManyConfig[TTableName][K][0]>
+                >
+              >[];
+              readonly destSchema: ExtractTableConfigName<
+                TManyConfig[TTableName][K][0]
+              >;
+              readonly cardinality: "many";
+            },
+            {
+              readonly sourceField: string[];
+              readonly destField: ColumnIndexKeys<
+                FindTableByKey<
+                  TDrizzleSchema,
+                  ExtractTableConfigName<TManyConfig[TTableName][K][1]>
+                >
+              >[];
+              readonly destSchema: ExtractTableConfigName<
+                TManyConfig[TTableName][K][1]
+              >;
+              readonly cardinality: "many";
+            },
+          ];
+        }
+      : {}
+    : {};
 
 /**
  * Gets the valid direct relation keys for a table that have corresponding table configurations.
@@ -211,7 +214,7 @@ type ManyConfig<
 type ReferencedZeroSchemas<
   TDrizzleSchema extends Record<string, unknown>,
   TColumnConfig extends TableColumnsConfig<TDrizzleSchema>,
-  TManyConfig extends ManyConfig<TDrizzleSchema, TColumnConfig>,
+  TManyConfig extends ManyConfig<TDrizzleSchema, TColumnConfig> | undefined,
   TTableName extends keyof TColumnConfig & keyof TManyConfig,
   TTable extends Table<any>,
 > = DirectRelationships<
@@ -233,11 +236,14 @@ type ReferencedZeroSchemas<
  * @template TManyConfig - Configuration for many-to-many relationships
  * @template TTableBuilderOptions - Options for the table builder
  */
-type CreateZeroSchema<
+type DrizzleToZeroSchema<
   TDrizzleSchema extends { [K in string]: unknown },
-  TColumnConfig extends TableColumnsConfig<TDrizzleSchema>,
-  TManyConfig extends ManyConfig<TDrizzleSchema, TColumnConfig>,
-  TCasing extends ZeroTableCasing,
+  TCasing extends ZeroTableCasing = undefined,
+  TColumnConfig extends
+    TableColumnsConfig<TDrizzleSchema> = DefaultTableColumnsConfig<TDrizzleSchema>,
+  TManyConfig extends
+    | ManyConfig<TDrizzleSchema, TColumnConfig>
+    | undefined = undefined,
 > = {
   readonly tables: {
     readonly [K in keyof TDrizzleSchema &
@@ -265,7 +271,7 @@ type CreateZeroSchema<
               TDrizzleSchema,
               TColumnConfig,
               TManyConfig,
-              K,
+              K & keyof TManyConfig & keyof TColumnConfig,
               TDrizzleSchema[K]
             >,
           ] extends [never]
@@ -274,7 +280,7 @@ type CreateZeroSchema<
                 TDrizzleSchema,
                 TColumnConfig,
                 TManyConfig,
-                K,
+                K & keyof TManyConfig & keyof TColumnConfig,
                 TDrizzleSchema[K]
               > extends never
             ? never
@@ -285,7 +291,7 @@ type CreateZeroSchema<
           TDrizzleSchema,
           TColumnConfig,
           TManyConfig,
-          K,
+          K & keyof TManyConfig & keyof TColumnConfig,
           TDrizzleSchema[K]
         >
       : never;
@@ -293,15 +299,13 @@ type CreateZeroSchema<
 };
 
 /**
- * Create a Zero schema from a Drizzle schema. This function transforms your Drizzle ORM schema
- * into a Zero schema format, handling both direct relationships and many-to-many relationships.
+ * Configuration for the Zero schema generator. This defines how your Drizzle ORM schema
+ * is transformed into a Zero schema format, handling both direct relationships and many-to-many relationships.
  *
- * The function allows you to:
+ * This allows you to:
  * - Select which tables to include in the Zero schema
  * - Configure column types and transformations
  * - Define many-to-many relationships through junction tables
- *
- * @deprecated Use `drizzleZeroConfig` instead.
  *
  * @param schema - The Drizzle schema to create a Zero schema from. This should be your complete Drizzle schema object
  *                containing all your table definitions and relationships.
@@ -309,13 +313,13 @@ type CreateZeroSchema<
  * @param config.tables - Specify which tables and columns to include in sync
  * @param config.manyToMany - Optional configuration for many-to-many relationships through junction tables
  *
- * @returns A Zero schema containing tables and their relationships
+ * @returns A configuration object for the Zero schema CLI.
  *
  * @example
  * ```typescript
  * import { integer, pgTable, serial, text, varchar } from 'drizzle-orm/pg-core';
  * import { relations } from 'drizzle-orm';
- * import { createZeroSchema } from 'drizzle-zero';
+ * import { drizzleZeroConfig } from 'drizzle-zero';
  *
  * // Define Drizzle schema
  * const users = pgTable('users', {
@@ -336,8 +340,8 @@ type CreateZeroSchema<
  *   }),
  * }));
  *
- * // Create Zero schema
- * const zeroSchema = createZeroSchema(
+ * // Export the configuration for the Zero schema CLI
+ * export default drizzleZeroConfig(
  *   { users, posts, usersRelations },
  *   {
  *     tables: {
@@ -355,11 +359,14 @@ type CreateZeroSchema<
  * );
  * ```
  */
-const createZeroSchema = <
+const drizzleZeroConfig = <
   const TDrizzleSchema extends { [K in string]: unknown },
-  const TColumnConfig extends TableColumnsConfig<TDrizzleSchema>,
-  const TManyConfig extends ManyConfig<TDrizzleSchema, TColumnConfig>,
-  const TCasing extends ZeroTableCasing,
+  const TColumnConfig extends
+    TableColumnsConfig<TDrizzleSchema> = DefaultTableColumnsConfig<TDrizzleSchema>,
+  const TManyConfig extends
+    | ManyConfig<TDrizzleSchema, TColumnConfig>
+    | undefined = undefined,
+  const TCasing extends ZeroTableCasing = undefined,
 >(
   /**
    * The Drizzle schema to create a Zero schema from.
@@ -372,7 +379,7 @@ const createZeroSchema = <
    * @param config.tables - The tables to include in the Zero schema.
    * @param config.many - Configuration for many-to-many relationships.
    */
-  config: {
+  config?: {
     /**
      * Specify the tables to include in the Zero schema.
      * This can include type overrides for columns, using `column.json()` for example.
@@ -410,16 +417,6 @@ const createZeroSchema = <
     readonly manyToMany?: TManyConfig;
 
     /**
-     * Whether to enable debug mode.
-     *
-     * @example
-     * ```ts
-     * { debug: true }
-     * ```
-     */
-    readonly debug?: boolean;
-
-    /**
      * The casing to use for the table name.
      *
      * @example
@@ -430,33 +427,30 @@ const createZeroSchema = <
     readonly casing?: TCasing;
 
     /**
-     * Hidden option for internal use by the CLI.
+     * Whether to enable debug mode.
      *
-     * @internal
+     * @example
+     * ```ts
+     * { debug: true }
+     * ```
      */
-    readonly "~__cli"?: boolean;
+    readonly debug?: boolean;
   },
 ): Flatten<
-  CreateZeroSchema<TDrizzleSchema, TColumnConfig, TManyConfig, TCasing>
+  DrizzleToZeroSchema<TDrizzleSchema, TCasing, TColumnConfig, TManyConfig>
 > => {
   let tables: any[] = [];
-
-  if (!config["~__cli"]) {
-    console.warn(
-      "🚨 drizzle-zero: importing drizzle-zero directly from a project will be deprecated in a future 1.x.x version. Please migrate to use the CLI instead: https://github.com/BriefHQ/drizzle-zero.",
-    );
-  }
 
   for (const [tableName, tableOrRelations] of typedEntries(schema)) {
     if (is(tableOrRelations, Table)) {
       const table = tableOrRelations;
 
-      const tableConfig = config.tables[tableName as keyof TColumnConfig];
+      const tableConfig = config?.tables?.[tableName as keyof TColumnConfig];
 
       // skip tables that don't have a config
-      if (!tableConfig) {
+      if (tableConfig === false) {
         debugLog(
-          config.debug,
+          config?.debug,
           `Skipping table ${String(tableName)} - no config provided`,
         );
         continue;
@@ -466,21 +460,18 @@ const createZeroSchema = <
         String(tableName),
         table,
         tableConfig,
-        config.debug,
-        config.casing,
+        config?.debug,
+        config?.casing,
       );
 
       tables.push(tableSchema);
     }
   }
 
-  let relationships = {} as Record<
-    keyof typeof config.tables,
-    Record<string, Array<unknown>>
-  >;
+  let relationships = {} as Record<string, Record<string, Array<unknown>>>;
 
   // Map many-to-many relationships
-  if (config.manyToMany) {
+  if (config?.manyToMany) {
     for (const [sourceTableName, manyConfig] of Object.entries(
       config.manyToMany,
     )) {
@@ -582,7 +573,7 @@ const createZeroSchema = <
             sourceTable: sourceTableName,
             relationName,
             relationship:
-              relationships[sourceTableName as keyof typeof relationships][
+              relationships[sourceTableName as keyof typeof relationships]?.[
                 relationName
               ],
           });
@@ -708,11 +699,12 @@ const createZeroSchema = <
         });
 
         if (
-          !config.tables[tableName as keyof typeof config.tables] ||
-          !config.tables[referencedTableKey as keyof typeof config.tables]
+          typeof config !== "undefined" &&
+          (!config?.tables[tableName as keyof typeof config.tables] ||
+            !config?.tables[referencedTableKey as keyof typeof config.tables])
         ) {
           debugLog(
-            config.debug,
+            config?.debug,
             `Skipping relation - tables not in schema config:`,
             {
               sourceTable: tableName,
@@ -756,15 +748,15 @@ const createZeroSchema = <
       name: key,
       relationships: value,
     })),
-  } as any) as unknown as CreateZeroSchema<
+  } as any) as unknown as DrizzleToZeroSchema<
     TDrizzleSchema,
+    TCasing,
     TColumnConfig,
-    TManyConfig,
-    TCasing
+    TManyConfig
   >;
 
   debugLog(
-    config.debug,
+    config?.debug,
     "Output Zero schema",
     JSON.stringify(finalSchema, null, 2),
   );
@@ -970,152 +962,4 @@ const getDrizzleKeyFromTableName = ({
   )?.[0]!;
 };
 
-/**
- * Configuration for the Zero schema generator. This defines how your Drizzle ORM schema
- * is transformed into a Zero schema format, handling both direct relationships and many-to-many relationships.
- *
- * This allows you to:
- * - Select which tables to include in the Zero schema
- * - Configure column types and transformations
- * - Define many-to-many relationships through junction tables
- *
- * @param schema - The Drizzle schema to create a Zero schema from. This should be your complete Drizzle schema object
- *                containing all your table definitions and relationships.
- * @param config - Configuration object for the Zero schema generation
- * @param config.tables - Specify which tables and columns to include in sync
- * @param config.manyToMany - Optional configuration for many-to-many relationships through junction tables
- *
- * @returns A configuration object for the Zero schema CLI.
- *
- * @example
- * ```typescript
- * import { integer, pgTable, serial, text, varchar } from 'drizzle-orm/pg-core';
- * import { relations } from 'drizzle-orm';
- * import { drizzleZeroConfig } from 'drizzle-zero';
- *
- * // Define Drizzle schema
- * const users = pgTable('users', {
- *   id: serial('id').primaryKey(),
- *   name: text('name'),
- * });
- *
- * const posts = pgTable('posts', {
- *   id: serial('id').primaryKey(),
- *   title: varchar('title'),
- *   authorId: integer('author_id').references(() => users.id),
- * });
- *
- * const usersRelations = relations(users, ({ one }) => ({
- *   posts: one(posts, {
- *     fields: [users.id],
- *     references: [posts.authorId],
- *   }),
- * }));
- *
- * // Export the configuration for the Zero schema CLI
- * export default drizzleZeroConfig(
- *   { users, posts, usersRelations },
- *   {
- *     tables: {
- *       users: {
- *         id: true,
- *         name: true,
- *       },
- *       posts: {
- *         id: true,
- *         title: true,
- *         authorId: true,
- *       },
- *     },
- *   }
- * );
- * ```
- */
-const drizzleZeroConfig = <
-  const TDrizzleSchema extends { [K in string]: unknown },
-  const TColumnConfig extends TableColumnsConfig<TDrizzleSchema>,
-  const TManyConfig extends ManyConfig<TDrizzleSchema, TColumnConfig>,
-  const TCasing extends ZeroTableCasing = ZeroTableCasing,
->(
-  /**
-   * The Drizzle schema to create a Zero schema from.
-   */
-  schema: TDrizzleSchema,
-
-  /**
-   * The configuration for the Zero schema.
-   *
-   * @param config.tables - The tables to include in the Zero schema.
-   * @param config.many - Configuration for many-to-many relationships.
-   */
-  config: {
-    /**
-     * Specify the tables to include in the Zero schema.
-     * This can include type overrides for columns, using `column.json()` for example.
-     *
-     * @example
-     * ```ts
-     * {
-     *   user: {
-     *     id: true,
-     *     name: true,
-     *   },
-     *   profile_info: {
-     *     id: true,
-     *     user_id: true,
-     *     metadata: column.json(),
-     *   },
-     * }
-     * ```
-     */
-    readonly tables: TColumnConfig;
-
-    /**
-     * Configuration for many-to-many relationships.
-     * Organized by source table, with each relationship specifying a tuple of [junction table name, destination table name].
-     *
-     * @example
-     * ```ts
-     * {
-     *   user: {
-     *     comments: ['message', 'comment']
-     *   }
-     * }
-     * ```
-     */
-    readonly manyToMany?: TManyConfig;
-
-    /**
-     * The casing to use for the table name.
-     *
-     * @example
-     * ```ts
-     * { casing: 'snake_case' }
-     * ```
-     */
-    readonly casing?: TCasing;
-
-    /**
-     * Whether to enable debug mode.
-     *
-     * @example
-     * ```ts
-     * { debug: true }
-     * ```
-     */
-    readonly debug?: boolean;
-  },
-): Flatten<
-  CreateZeroSchema<TDrizzleSchema, TColumnConfig, TManyConfig, TCasing>
-> => {
-  const zeroSchema = createZeroSchema(schema, { ...config, "~__cli": true });
-
-  return zeroSchema as CreateZeroSchema<
-    TDrizzleSchema,
-    TColumnConfig,
-    TManyConfig,
-    TCasing
-  >;
-};
-
-export { createZeroSchema, drizzleZeroConfig, type CreateZeroSchema };
+export { drizzleZeroConfig, type DrizzleToZeroSchema };

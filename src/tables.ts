@@ -243,7 +243,7 @@ const createZeroTableBuilder = <
   /**
    * Configuration specifying which columns to include and how to map them
    */
-  columns: TColumnConfig,
+  columns?: TColumnConfig,
   /**
    * Whether to enable debug mode.
    */
@@ -261,7 +261,7 @@ const createZeroTableBuilder = <
 
   const columnsMapped = typedEntries(tableColumns).reduce(
     (acc, [key, column]) => {
-      const columnConfig = columns[key as keyof TColumnConfig];
+      const columnConfig = columns?.[key as keyof TColumnConfig];
 
       if (columnConfig === false) {
         debugLog(
@@ -309,7 +309,7 @@ const createZeroTableBuilder = <
       }
 
       const isColumnOptional =
-        typeof columnConfig === "boolean"
+        typeof columnConfig === "boolean" || typeof columnConfig === "undefined"
           ? column.hasDefault && column.defaultFn === undefined
             ? true
             : !column.notNull

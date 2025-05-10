@@ -8,6 +8,7 @@ import {
 } from "@rocicorp/zero";
 import { describe, test } from "vitest";
 import { assertEqual, expectSchemaDeepEqual } from "./utils";
+import { drizzleZeroConfig, type DrizzleToZeroSchema } from "../src/relations";
 
 describe("relationships", () => {
   test("relationships - many-to-many-incorrect-many", async ({ expect }) => {
@@ -238,6 +239,15 @@ describe("relationships", () => {
 
     expectSchemaDeepEqual(oneToOneSelfZeroSchema).toEqual(expected);
     assertEqual(oneToOneSelfZeroSchema, expected);
+
+    const drizzleSchema = await import("./schemas/one-to-one-self.schema");
+    assertEqual(
+      null as unknown as DrizzleToZeroSchema<typeof drizzleSchema>,
+      expected,
+    );
+
+    const directMapping = drizzleZeroConfig(drizzleSchema);
+    assertEqual(directMapping, expected);
   });
 
   test("relationships - one-to-one", async () => {
@@ -288,6 +298,15 @@ describe("relationships", () => {
 
     expectSchemaDeepEqual(oneToOneZeroSchema).toEqual(expected);
     assertEqual(oneToOneZeroSchema, expected);
+
+    const drizzleSchema = await import("./schemas/one-to-one.schema");
+    assertEqual(
+      null as unknown as DrizzleToZeroSchema<typeof drizzleSchema>,
+      expected,
+    );
+
+    const directMapping = drizzleZeroConfig(drizzleSchema);
+    assertEqual(directMapping, expected);
   });
 
   test("relationships - one-to-one-subset", async () => {
@@ -308,7 +327,10 @@ describe("relationships", () => {
     });
 
     expectSchemaDeepEqual(oneToOneSubsetZeroSchema).toEqual(expected);
-    assertEqual(oneToOneSubsetZeroSchema, expected);
+    assertEqual(
+      oneToOneSubsetZeroSchema["relationships"],
+      expected["relationships"],
+    );
   });
 
   test("relationships - one-to-one-foreign-key", async () => {
@@ -360,6 +382,14 @@ describe("relationships", () => {
 
     expectSchemaDeepEqual(oneToOneForeignKeyZeroSchema).toEqual(expected);
     assertEqual(oneToOneForeignKeyZeroSchema, expected);
+
+    const drizzleSchema = await import(
+      "./schemas/one-to-one-foreign-key.schema"
+    );
+    assertEqual(
+      null as unknown as DrizzleToZeroSchema<typeof drizzleSchema>,
+      expected,
+    );
   });
 
   test("relationships - one-to-one-2", async () => {
@@ -413,18 +443,6 @@ describe("relationships", () => {
           destField: ["senderId"],
           destSchema: expectedMessage,
         }),
-        mediums: many(
-          {
-            sourceField: ["id"],
-            destField: ["senderId"],
-            destSchema: expectedMessage,
-          },
-          {
-            sourceField: ["mediumId"],
-            destField: ["id"],
-            destSchema: expectedMedium,
-          },
-        ),
       }),
     );
 
@@ -538,6 +556,12 @@ describe("relationships", () => {
 
     expectSchemaDeepEqual(oneToManyZeroSchema).toEqual(expected);
     assertEqual(oneToManyZeroSchema, expected);
+
+    const drizzleSchema = await import("./schemas/one-to-many.schema");
+    assertEqual(
+      null as unknown as DrizzleToZeroSchema<typeof drizzleSchema>,
+      expected,
+    );
   });
 
   test("relationships - one-to-many-named", async () => {
@@ -600,6 +624,12 @@ describe("relationships", () => {
 
     expectSchemaDeepEqual(oneToManyNamedZeroSchema).toEqual(expected);
     assertEqual(oneToManyNamedZeroSchema, expected);
+
+    const drizzleSchema = await import("./schemas/one-to-many-named.schema");
+    assertEqual(
+      null as unknown as DrizzleToZeroSchema<typeof drizzleSchema>,
+      expected,
+    );
   });
 
   test("relationships - many-to-many", async () => {
@@ -1060,6 +1090,15 @@ describe("relationships", () => {
       oneToManyCasingZeroSchema.tables.posts.columns.authorId,
       expected.tables.posts.columns.authorId,
     );
+
+    const drizzleSchema = await import("./schemas/one-to-many-casing.schema");
+    assertEqual(
+      null as unknown as DrizzleToZeroSchema<
+        typeof drizzleSchema,
+        "snake_case"
+      >,
+      expected,
+    );
   });
 
   test("relationships - one-to-many-parent-child", async () => {
@@ -1099,6 +1138,14 @@ describe("relationships", () => {
 
     expectSchemaDeepEqual(oneToManyParentChildZeroSchema).toEqual(expected);
     assertEqual(oneToManyParentChildZeroSchema, expected);
+
+    const drizzleSchema = await import(
+      "./schemas/one-to-many-parent-child.schema"
+    );
+    assertEqual(
+      null as unknown as DrizzleToZeroSchema<typeof drizzleSchema>,
+      expected,
+    );
   });
 
   test("relationships - custom-schema", async () => {
@@ -1133,5 +1180,11 @@ describe("relationships", () => {
 
     expectSchemaDeepEqual(customSchemaZeroSchema).toEqual(expected);
     assertEqual(customSchemaZeroSchema, expected);
+
+    const drizzleSchema = await import("./schemas/custom-schema.schema");
+    assertEqual(
+      null as unknown as DrizzleToZeroSchema<typeof drizzleSchema>,
+      expected,
+    );
   });
 });

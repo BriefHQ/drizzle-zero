@@ -26,6 +26,28 @@ export type TableColumnsConfig<TDrizzleSchema extends Record<string, unknown>> =
   }>;
 
 /**
+ * A default config type which includes all tables in the Drizzle schema.
+ * @template TDrizzleSchema - The complete Drizzle schema
+ */
+export type DefaultTableColumnsConfig<
+  TDrizzleSchema extends Record<string, unknown>,
+> = Flatten<{
+  readonly [K in keyof TDrizzleSchema as TDrizzleSchema[K] extends Table<any>
+    ? K
+    : never]: TDrizzleSchema[K] extends Table<any>
+    ? DefaultColumnsConfig<TDrizzleSchema[K]>
+    : never;
+}>;
+
+/**
+ * A default config type which includes all columns in a Drizzle table.
+ * @template TTable - The Drizzle table type
+ */
+export type DefaultColumnsConfig<TTable extends Table> = {
+  readonly [K in ColumnNames<TTable>]: true;
+};
+
+/**
  * Extracts the table name from a Drizzle table type.
  * @template TTable The Drizzle table type
  */
