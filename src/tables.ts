@@ -108,7 +108,12 @@ type ZeroMappedCustomType<
   columnType: "PgEnumColumn";
 }
   ? CD["data"]
-  : CD extends { $type: any }
+  : CD extends {
+    columnType: "PgText";
+    enumValues: string[];
+  }
+    ? CD["enumValues"][number]
+    : CD extends { $type: any }
     ? CD["$type"]
     : ZeroTypeToTypescriptType[ZeroMappedColumnType<TTable, KColumn>];
 

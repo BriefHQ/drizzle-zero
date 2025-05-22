@@ -72,6 +72,7 @@ export const user = pgTable("user", {
   testExportedType: jsonb("test_exported_type")
     .$type<TestExportedType>()
     .notNull(),
+  status: text("status", { enum: ["ASSIGNED", "COMPLETED"] }),
 });
 
 export const userRelations = relations(user, ({ many }) => ({

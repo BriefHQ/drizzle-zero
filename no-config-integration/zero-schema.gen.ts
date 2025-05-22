@@ -727,6 +727,15 @@ export const schema = {
           >,
           serverName: "test_exported_type",
         },
+        status: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "user",
+            "status"
+          >,
+        },
       },
       primaryKey: ["id"],
     },
